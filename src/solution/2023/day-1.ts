@@ -1,4 +1,4 @@
-import { read_file } from "../utils"
+import { read_file } from "../../../utils"
 
 const calibration = await read_file("day-1")
 
@@ -21,19 +21,7 @@ const to_number = (s: string) => spelled_digit[s] ?? parseInt(s)
 
 const first_number = (s: string) => s.match(regex)?.map(to_number)
 
-function last_number(s: string, i = -1) {
-  let match = s.slice(i, s.length).match(regex)
-
-  if (match) {
-    return match.map(to_number)
-  }
-
-  if (s.length - i == 0) {
-    return 0
-  }
-
-  return last_number(s, i - 1)
-}
+const last_number = (s: string) => s.match(new RegExp(regex.source + '$'))?.map(to_number)
 
 const sum = calibration
   .reduce((acc, cur) => {
