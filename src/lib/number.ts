@@ -1,5 +1,4 @@
 const num_reg = /one|two|three|four|five|six|seven|eight|nine|[0-9]/
-const rev_num_reg = /eno|owt|eerht|ruof|evif|xis|neves|thgie|enin|[0-9]/
 
 const str_num: Record<string, number> = {
     zero: 0,
@@ -12,35 +11,22 @@ const str_num: Record<string, number> = {
     seven: 7,
     eight: 8,
     nine: 9,
-    orez: 0,
-    eno: 1,
-    owt: 2,
-    eerht: 3,
-    ruof: 4,
-    evif: 5,
-    xis: 6,
-    neves: 7,
-    thgie: 8,
-    enin: 9
 }
 
-export function to_num(s: string, reg: RegExp = num_reg) {
-    const match = s.match(reg)?.at(0)
-
-    console.log(s, match)
-    
-
-    if (!match) {
-        return 0
-    }
-
-    return str_num[match] ?? +match
+export function to_num(s: string) {
+    return str_num[s] ?? +s
 }
 
 export function first_num(s: string) {
-    return to_num(s, num_reg)
+    return s.match(num_reg)?.map(to_num).at(0) ?? NaN
 }
 
-export function last_num(s: string) {
-    return to_num(s.split('').reverse().join(''), rev_num_reg)
+export function last_num(s: string, i = -1) {
+    let match = s.slice(i).match(num_reg)
+
+    if (match) return match.map(to_num).at(0) ?? NaN
+
+    if (s.length - i == 0) return NaN
+
+    return last_num(s, i - 1)
 }
