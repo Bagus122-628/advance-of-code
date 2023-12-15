@@ -1,13 +1,12 @@
-import { read_file } from "../../../utils";
+import { test, expect, describe } from 'bun:test';
+import { read_file } from '@lib/utils';
 
 let sum = 0
 
-for (const game of await read_file('day-2')) {
+for (const game of await read_file()) {
     const match = game.match(/(\w+) (\d+)(:) (.*)/)
 
-    if (match == null) {
-        throw new Error('no string match')
-    }
+    if (match == null) throw new Error('no string match')
 
     const [_, , id, , record] = match
 
@@ -15,22 +14,17 @@ for (const game of await read_file('day-2')) {
 
     for (const sets of record.split(";")) {
 
-        if (match == null) {
-            throw new Error('no string match')
-        }
+        if (match == null) throw new Error('no string match')
 
         for (const cube of sets.split(", ")) {
             const match = cube.match(/(\d+) (\w+)/)
 
-            if (match == null) {
-                throw new Error('no string match')
-            }
+            if (match == null) throw new Error('no string match')
 
             const [, count, color] = match
 
             cubes[color].push(+count)
         }
-
     }
 
     sum += Object.keys(cubes).reduce((acc, cur) => {
