@@ -3,7 +3,7 @@ import file_input from "./day-3.txt";
 import { range } from '@lib/number';
 
 test('sum of all part number of day-3.txt', async () => {
-    expect(await sum_part_number()).toEqual(4361)
+    expect(await sum_part_number()).toEqual(467835)
 })
 
 
@@ -11,17 +11,26 @@ async function sum_part_number(input: string = file_input) {
     const line = input.split('\n')
     const w = line?.at(0)?.length ?? 0
 
-    const num: number[] = []
+    const num: { [key: number]: string } = {}
 
     for (const test of input.matchAll(/\d+/gm)) {
-        is_symbol_nearby(input, test.index, test[0].length, w + 1) && num.push(+test[0])
+        const tow_gear = get_gear_index(input, test.index, test[0].length, w + 1)
+        if (tow_gear) {
+            num[tow_gear] = (num[tow_gear] ?? "") + test[0] + "*"
+        }
     }
 
-    return num.reduce((acc, cur) => acc + cur, 0)
+    return Object.values(num).map(v => {
+        const a = v.split('*').filter(v => v);
+
+        if (a.length > 1) return a.map(Number).reduce((acc, cur) => acc * cur, 1)
+
+        return 0
+    }).reduce((acc, cur) => acc + cur, 0)
 }
 
-function is_symbol_nearby(input: string, n: number | undefined, len: number, w: number) {
-    if (n == undefined) return false
+function get_gear_index(input: string, n: number | undefined, len: number, w: number) {
+    if (n == undefined) return NaN
 
     const t = n <= w ? NaN : n - w
     const r = input[n + len] == '\n' ? NaN : n + len
@@ -33,13 +42,14 @@ function is_symbol_nearby(input: string, n: number | undefined, len: number, w: 
     const bl = b && l ? b - 1 : b ? b : NaN
     const br = b && r ? b + len : b ? b : NaN
 
-    const sub_matrix = [...range(tl, tr).map(i => input[i]), input[l], input[r], ...range(bl, br).map(i => input[i])].join('')
+    const index = [...range(tl, tr), l, r, ...range(bl, br)]
 
-    const match = sub_matrix.match(/[^.\d\n]/)
+    const i = index
+        .find(i => {
+            const match = input[i]?.match(/\*/)
+            if (match) return true
+        })
 
-    if (match) {
-        return true
-    }
-
-    return false
+    if (i) return i
+    else return NaN
 }
