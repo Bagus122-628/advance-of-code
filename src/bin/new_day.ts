@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+
 import { CURRENT_YEAR, NEXT_DAY } from "@lib/config"
 
 const current_day_reg = /CURRENT_DAY=\d+/
