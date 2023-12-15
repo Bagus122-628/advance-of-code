@@ -30,3 +30,8 @@ export function last_num(s: string, i = -1) {
 
     return last_num(s, i - 1)
 }
+
+
+export function range(s: number, l: number) {
+    return Array.from({ length: l - s + 1 }, (_, i) => s + i);
+}
