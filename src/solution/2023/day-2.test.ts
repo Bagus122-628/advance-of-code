@@ -32,6 +32,3 @@ for (const game of await read_file()) {
     }, 1);
 }
 
-console.log("Possible:", sum);
-
-
