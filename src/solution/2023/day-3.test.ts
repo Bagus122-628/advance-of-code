@@ -1,31 +1,34 @@
-import { expect, test } from 'bun:test';
-import file_input from "./day-3.txt";
 import { range } from '@lib/number';
+import { expect, test } from 'bun:test';
 
-test('sum of all part number of day-3.txt', async () => {
-    expect(await sum_part_number()).toEqual(467835)
-})
+const input = `
+467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..
+`
+test('2023/day-3/part-2', () => expect(sum_part_number(input)).toEqual(467835))
 
-
-async function sum_part_number(input: string = file_input) {
-    const line = input.split('\n')
+function sum_part_number(input: string) {
+    const line = input.trim().split('\n')
     const w = line?.at(0)?.length ?? 0
 
     const num: { [key: number]: string } = {}
 
     for (const test of input.matchAll(/\d+/gm)) {
         const tow_gear = get_gear_index(input, test.index, test[0].length, w + 1)
-        if (tow_gear) {
-            num[tow_gear] = (num[tow_gear] ?? "") + test[0] + "*"
-        }
+        tow_gear ? num[tow_gear] = (num[tow_gear] ?? "") + test[0] + "*" : ""
     }
 
     return Object.values(num).map(v => {
         const a = v.split('*').filter(v => v);
-
-        if (a.length > 1) return a.map(Number).reduce((acc, cur) => acc * cur, 1)
-
-        return 0
+        return a.length > 1 ? a.map(Number).reduce((acc, cur) => acc * cur, 1) : 0
     }).reduce((acc, cur) => acc + cur, 0)
 }
 
@@ -42,14 +45,9 @@ function get_gear_index(input: string, n: number | undefined, len: number, w: nu
     const bl = b && l ? b - 1 : b ? b : NaN
     const br = b && r ? b + len : b ? b : NaN
 
-    const index = [...range(tl, tr), l, r, ...range(bl, br)]
+    const indexes = [...range(tl, tr), l, r, ...range(bl, br)]
 
-    const i = index
-        .find(i => {
-            const match = input[i]?.match(/\*/)
-            if (match) return true
-        })
+    const index = indexes.find(i => input[i]?.match(/\*/) ? true : false)
 
-    if (i) return i
-    else return NaN
+    return index ? index : NaN
 }
