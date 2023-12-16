@@ -1,17 +1,17 @@
-import { test, expect, describe } from 'bun:test';
-import { first_num, last_num } from "@lib/number"
-import { read_file } from "@lib/utils"
+import { first_num, last_num } from "@lib/number";
+import { expect, test } from 'bun:test';
 
-test('2023/day-1.part-1', async () => {
-    expect(await sum_of_calibration()).toEqual(281);
-});
+const input = `
+two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen
+`
+test('2023/day-1/part-2', () => expect(sum_of_calibration(input)).toEqual(281))
 
-test('2023/day-1.part-2', async () => {
-    expect(await sum_of_calibration()).toEqual(281);
-});
-
-const calibration = await read_file()
-
-async function sum_of_calibration(file: string[] = calibration) {
-    return file.reduce((acc, cur) => acc + parseInt(`${first_num(cur)}${last_num(cur)}`), 0)
+function sum_of_calibration(input: string) {
+    return input.trim().split('\n').reduce((acc, cur) => acc + first_num(cur) * 10 + last_num(cur), 0)
 }
